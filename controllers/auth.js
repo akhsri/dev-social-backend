@@ -4,8 +4,10 @@ var jwt = require("jsonwebtoken");
 var expressJwt = require('express-jwt');
 
 exports.signup = (req, res) => {
+    console.log('signup called');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        console.log('error: ', errors);
         return res.status(422).json({
             error: errors.array()[0].msg,
             param: errors.array()[0].param
@@ -13,17 +15,19 @@ exports.signup = (req, res) => {
     }
 
     const user = new User(req.body);
-
+    console.log("user: ", user);
     user.save((err, user) => {
         if (err || !user) {
             return res.status(400).json({
                 err: 'Not able to save user in DB'
             })
         }
+
         res.json({
-            name: user.name,
+            firstName: user.firstName,
+            lastName: user.lastName,
             email: user.email,
-            id: user._id
+            id: user._id,
         })
     })
 }
@@ -69,6 +73,7 @@ exports.signout = (req, res) => {
 
 exports.isSignedIn = expressJwt({
     secret: process.env.SECRET,
+    algorithms: ['HS256'],
     userProperty: "auth"
 })
 
