@@ -7,7 +7,8 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 // Routes
-const authRoutes = require("./routes/auth")
+const authRoutes = require('./routes/auth')
+const userRoutes = require('./routes/user')
 
 
 // create express app
@@ -44,6 +45,10 @@ app.use(cors());
 app.get('/', (req, res) => {
     res.json({ "message": "Welcome to DevSocial" });
 });
+
+app.use("/api", authRoutes);
+app.use("/api", userRoutes);
+
 
 const port = process.env.PORT || 8000;
 // listen for requests
