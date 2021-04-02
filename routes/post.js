@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const { isSignedIn, isAuthenticated } = require('../controllers/auth');
 const { getUserById } = require('../controllers/user');
-const { createPost } = require('../controllers/post');
+const { createPost, photo, deletePost, updatePost, getAllPosts } = require('../controllers/post');
 
 router.param("userId", getUserById);
 
@@ -15,7 +15,7 @@ router.delete("/post/:postId/:userId", isSignedIn, isAuthenticated, deletePost)
 
 router.put("/post/:postId/:userId", isSignedIn, isAuthenticated, updatePost)
 
-router.get("/products", getAllProducts);
+router.get("/posts", getAllPosts);
 
 
 
