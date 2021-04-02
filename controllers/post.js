@@ -4,6 +4,7 @@ const _ = require("lodash");
 const fs = require("fs");
 
 exports.getPostById = (req, res, next, id) => {
+    console.log('getPostById called');
     Post.findById(id)
         .exec((err, post) => {
             if (err) {
@@ -61,12 +62,14 @@ exports.createPost = (req, res) => {
 }
 
 exports.getPost = (req, res) => {
-    req.post.photo = undefined;
+    console.log('getPost called');
+    // req.post.photo = undefined;
     return res.json(req.post);
 }
 
 // middleware
 exports.photo = (req, res, next) => {
+    console.log('photo called');
     if (req.post.photo.data) {
         res.set("Content-Type", req.post.photo.contentType);
         return res.send(req.post.photo.data);
@@ -75,6 +78,7 @@ exports.photo = (req, res, next) => {
 }
 
 exports.deletePost = (req, res) => {
+    console.log('deletePost called')
     let post = req.post;
     post.remove((err, deletedPost) => {
         if (err) {
@@ -145,9 +149,10 @@ exports.updatePost = (req, res) => {
 }
 
 exports.getAllPosts = (req, res) => {
+    console.log('getAllPosts called')
     let limit = req.query.limit ? parseInt(req.query.limit) : 8;
     let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
-    Product.find()
+    Post.find()
         .select("-photo")
         .sort([[sortBy, "asc"]])
         .limit(limit)
@@ -157,6 +162,9 @@ exports.getAllPosts = (req, res) => {
                     error: "No post found"
                 })
             }
-            res.json(posts)
+            res.json({
+                count: posts.length,
+                posts
+            })
         })
 }
