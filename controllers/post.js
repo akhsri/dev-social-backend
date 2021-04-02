@@ -3,6 +3,20 @@ const formidable = require("formidable");
 const _ = require("lodash");
 const fs = require("fs");
 
+exports.getPostById = (req, res, next, id) => {
+    Post.findById(id)
+        .exec((err, post) => {
+            if (err) {
+                return res.status(400).json({
+                    error: "Post not found"
+                })
+            }
+            req.post = post;
+            next();
+
+        })
+}
+
 exports.createPost = (req, res) => {
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
@@ -44,4 +58,32 @@ exports.createPost = (req, res) => {
         })
 
     });
+}
+
+exports.getPost = (req, res) => {
+    req.post.photo = undefined;
+    return res.json(req.post);
+}
+
+// middleware
+exports.photo = (req, res, next) => {
+    if (req.post.photo.data) {
+        res.set("Content-Type", req.post.photo.contentType);
+        return res.send(req.post.photo.data);
+    }
+    next();
+}
+
+exports.deletePost = (req, res) => {
+    let post = req.post;
+    post.remove((err, deletedPost) => {
+        if (err) {
+            return res.status(400).json({
+                error: "Failed to delete the post"
+            })
+        }
+        res.json({
+            message: "Post deleted successfully"
+        })
+    })
 }
