@@ -14,24 +14,24 @@ exports.createPost = (req, res) => {
             });
         }
 
-        const { description, photo, likes, comments, postedBy } = fields;
+        const { description } = fields;
+        const { photo } = files;
         if (!description && !photo) {
             return res.status(400).json({
                 error: 'Please add atleast a description or a photo'
             });
         }
 
-        let post = req.post;
-        post = _.extend(product, fields);
-
+        let post = new Post(fields);
         if (files.photo) {
             if (files.photo.size > 5000000) {
                 return res.status(400).json({
                     error: 'File size too big!'
                 });
-                post.photo.data = fs.readFileSync(files.photo.path);
-                post.photo.contentType = files.photo.type;
             }
+            post.photo.data = fs.readFileSync(files.photo.path);
+            post.photo.contentType = files.photo.type;
+            post.postedBy = req.profile._id;
         }
 
         post.save((err, post) => {
