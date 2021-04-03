@@ -10,6 +10,7 @@ const cors = require("cors");
 const authRoutes = require('./routes/auth')
 const userRoutes = require('./routes/user')
 const postRoutes = require('./routes/post')
+const likeRoutes = require('./routes/like')
 
 
 // create express app
@@ -50,7 +51,7 @@ app.get('/', (req, res) => {
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", postRoutes);
-
+app.use('/api', likeRoutes);
 
 const port = process.env.PORT || 8000;
 // listen for requests
