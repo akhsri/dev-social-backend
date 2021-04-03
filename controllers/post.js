@@ -36,8 +36,9 @@ exports.createPost = (req, res) => {
                 error: 'Please add atleast a description or a photo'
             });
         }
-
+        //console.log('fields: ', fields);
         let post = new Post(fields);
+        //console.log('post: ', post);
         if (files.photo) {
             if (files.photo.size > 5000000) {
                 return res.status(400).json({
@@ -46,8 +47,9 @@ exports.createPost = (req, res) => {
             }
             post.photo.data = fs.readFileSync(files.photo.path);
             post.photo.contentType = files.photo.type;
-            post.postedBy = req.profile._id;
+
         }
+        post.postedBy = req.profile._id;
 
         post.save((err, post) => {
             if (err || !post) {
